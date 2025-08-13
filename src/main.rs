@@ -32,6 +32,25 @@ fn print_centered_figure(figure: &figlet_rs::FIGure) {
     }
 }
 
+// Add this function for centering plain text
+fn print_centered_text(text: &str) {
+    if let Some((Width(width), Height(height))) = terminal_size() {
+        let lines: Vec<&str> = text.lines().collect();
+        let text_height = lines.len();
+        let vertical_padding = (height as usize).saturating_sub(text_height) / 2;
+
+        for _ in 0..vertical_padding {
+            println!();
+        }
+        for line in lines {
+            let padding = (width as usize).saturating_sub(line.len()) / 2;
+            println!("{:padding$}{}", "", line, padding = padding);
+        }
+    } else {
+        println!("{}", text);
+    }
+}
+
 fn main() {
     let mut is_break: bool = false;
     let mut minutes: i32 = 0;
@@ -65,7 +84,7 @@ fn main() {
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
                     print_centered_figure(figure);
-                
+                    print_centered_text("LONG BREAK >.<!!");
                 }
             }
         }
@@ -92,6 +111,7 @@ fn main() {
             let figure = standard_font.convert(&time);
             if let Some(ref figure) = figure {
                 print_centered_figure(figure);
+                print_centered_text("BREAK TIME >.<");
             }
         }
 
@@ -119,6 +139,7 @@ fn main() {
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
                     print_centered_figure(figure);
+                    print_centered_text("TIME TO WORK :(");
                 }
             }
         };
