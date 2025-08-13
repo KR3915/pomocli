@@ -17,7 +17,7 @@ i needed pomodoro that can run in terminal and i can just adjust the time and me
 ## Instalation
 clone the repo then build it
 ```bash
-git clone https://github.com/KR3915/pomodoro-cli.git
+git clone https://github.com/KR3915/pomocli.git
 cd pomodoro-cli
 cargo build --release
 ./target/release/pomodoro-cli
