@@ -6,6 +6,7 @@ use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 use json_comments::StripComments;
+use notify_rust::Notification;
 
 #[derive(Deserialize)]
 struct Config {
@@ -118,8 +119,9 @@ fn main() {
             count = 0;
             let mut minutes = config.long_break_minutes as i32;
             let mut seconds = 0;
-            clear_screen();
+
             loop {
+                clear_screen();
                 let time = format!("{}:{:02}", minutes, seconds);
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
@@ -129,6 +131,11 @@ fn main() {
                 thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
+                        // Notify
+                        let _ = Notification::new()
+                            .summary("Pomocli")
+                            .body(&config.long_break_message)
+                            .show();
                         is_break = false;
                         break;
                     } else {
@@ -138,15 +145,15 @@ fn main() {
                 } else {
                     seconds -= 1;
                 }
-                clear_screen();
             }
         }
         // Break
         else if is_break {
             let mut minutes = config.break_minutes as i32;
             let mut seconds = 0;
-            clear_screen();
+
             loop {
+                clear_screen();
                 let time = format!("{}:{:02}", minutes, seconds);
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
@@ -156,6 +163,11 @@ fn main() {
                 thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
+                        // Notify
+                        let _ = Notification::new()
+                            .summary("Pomocli")
+                            .body(&config.break_message)
+                            .show();
                         is_break = false;
                         break;
                     } else {
@@ -165,15 +177,15 @@ fn main() {
                 } else {
                     seconds -= 1;
                 }
-                clear_screen();
             }
         }
         // Work
         else {
             let mut minutes = config.work_minutes as i32;
             let mut seconds = 0;
-            clear_screen();
+
             loop {
+                clear_screen();
                 let time = format!("{}:{:02}", minutes, seconds);
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
@@ -183,6 +195,11 @@ fn main() {
                 thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
+                        // Notify
+                        let _ = Notification::new()
+                            .summary("Pomocli")
+                            .body(&config.work_message)
+                            .show();
                         is_break = true;
                         count += 1;
                         break;
@@ -193,7 +210,6 @@ fn main() {
                 } else {
                     seconds -= 1;
                 }
-                clear_screen();
             }
         }
     }
