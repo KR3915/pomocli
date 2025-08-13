@@ -22,6 +22,7 @@ cargo build --release
 ```
 ## Customization
 in ~/.config/pomocli/config.jsonc you can adjust the time for break, long break and work time as well as the messages
+```bash
 {
   // Pomodoro work duration in minutes
   "work_minutes": 25,
@@ -40,6 +41,6 @@ in ~/.config/pomocli/config.jsonc you can adjust the time for break, long break 
   "break_message": "BREAK TIME >.<",
   "long_break_message": "LONG BREAK >.<!!"
 }
-
+```
 
 
