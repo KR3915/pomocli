@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 figlet-rs = "0.1.0"
 terminal_size = "0.2"
+notify-rust = "4"
