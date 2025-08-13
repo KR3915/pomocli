@@ -2,6 +2,7 @@ use figlet_rs::FIGfont;
 use std::{thread, time};
 use std::io::{stdout, Write};
 use terminal_size::{Width, Height, terminal_size};
+use notify_rust::Notification;
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[1;1H");
@@ -51,98 +52,87 @@ fn print_centered_text(text: &str) {
     }
 }
 
+fn timer_loop(
+    minutes: i32,
+    seconds: i32,
+    standard_font: &FIGfont,
+    timer_message: &str,
+    finished_message: &str,
+) {
+    let mut minutes = minutes;
+    let mut seconds = seconds;
+    clear_screen();
+
+    loop {
+        let time = format!("{}:{:02}", minutes, seconds);
+        let figure = standard_font.convert(&time);
+        if let Some(ref figure) = figure {
+            print_centered_figure(figure);
+            print_centered_text(timer_message);
+        }
+        thread::sleep(time::Duration::from_secs(1));
+        if seconds == 0 {
+            if minutes == 0 {
+                clear_screen();
+                print_centered_text(finished_message);
+
+                // Send notification
+                let _ = Notification::new()
+                    .summary("Pomodoro Timer")
+                    .body(finished_message)
+                    .show();
+
+                thread::sleep(time::Duration::from_secs(2));
+                break;
+            } else {
+                minutes -= 1;
+                seconds = 59;
+            }
+        } else {
+            seconds -= 1;
+        }
+        clear_screen();
+    }
+}
+
 fn main() {
     let mut is_break: bool = false;
-    let mut minutes: i32 = 0;
-    let mut seconds: i32 = 0;
     let mut count = 0;
-
     let standard_font = FIGfont::standard().unwrap();
 
     loop {
         if count == 4 {
             count = 0;
-            minutes = 25;
-            seconds = 0;
-
-            loop {
-                clear_screen();
-                thread::sleep(time::Duration::from_secs(1));
-                if seconds == 0 {
-                    if minutes == 0 {
-                        is_break = false;
-                        break;
-                    } else {
-                        minutes -= 1;
-                        seconds = 59;
-                    }
-                } else {
-                    seconds -= 1;
-                }
-
-                let time = format!("{}:{:02}", minutes, seconds);
-                let figure = standard_font.convert(&time);
-                if let Some(ref figure) = figure {
-                    print_centered_figure(figure);
-                    print_centered_text("LONG BREAK >.<!!");
-                }
-            }
+            timer_loop(
+                0,
+                5,
+                &standard_font,
+                "LONG BREAK >.<!!",
+                "GET BACK TO WORK!!!!",
+            );
+            is_break = false;
+            continue;
         }
         if is_break {
-            minutes = 5;
-            seconds = 0;
+            timer_loop(
+                0,
+                5,
+                &standard_font,
+                "BREAK TIME >.<",
+                "GET YO ASS BACK TO WORK!!!",
+            );
+            is_break = false;
+        } else {
+            timer_loop(
+                0,
+                5,
+                &standard_font,
+                "TIME TO WORK :(",
+                "time to relax ＾･ｪ･＾",
+            );
+            is_break = true;
+            count += 1;
         }
-        loop {
-            clear_screen();
-            thread::sleep(time::Duration::from_secs(1));
-            if seconds == 0 {
-                if minutes == 0 {
-                    is_break = false;
-                    break;
-                } else {
-                    minutes -= 1;
-                    seconds = 59;
-                }
-            } else {
-                seconds -= 1;
-            }
-
-            let time = format!("{}:{:02}", minutes, seconds);
-            let figure = standard_font.convert(&time);
-            if let Some(ref figure) = figure {
-                print_centered_figure(figure);
-                print_centered_text("BREAK TIME >.<");
-            }
-        }
-
-        if !is_break {
-            minutes = 20;
-            seconds = 0;
-
-            loop {
-                thread::sleep(time::Duration::from_secs(1));
-                clear_screen();
-                if seconds == 0 {
-                    if minutes == 0 {
-                        is_break = true;
-                        count += 1;
-                        break;
-                    } else {
-                        minutes -= 1;
-                        seconds = 59;
-                    }
-                } else {
-                    seconds -= 1;
-                }
-
-                let time = format!("{}:{:02}", minutes, seconds);
-                let figure = standard_font.convert(&time);
-                if let Some(ref figure) = figure {
-                    print_centered_figure(figure);
-                    print_centered_text("TIME TO WORK :(");
-                }
-            }
-        };
     }
 }
 
