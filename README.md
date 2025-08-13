@@ -1,5 +1,5 @@
 # Pomocli
-pomocli is simple pomodoro based in terminal with notification feature with simple jsonc config
+pomocli is simple pomodoro based in terminal with customizable time and notification feature with simple jsonc config
 ### What is pomodoro
 The Pomodoro Technique is a simple way to manage your time. You work for 25 minutes, then take a 5-minute break. After doing that four times, you take a longer break, like 15 to 30 minutes. It helps you stay focused and get things done without burning out.
 ## Showcase
@@ -23,7 +23,7 @@ cargo build --release
 ./target/release/pomodoro-cli
 ```
 ## Customization
-in ~/.config/pomocli/config.jsonc you can adjust the time for break, long break and work time as well as the messages
+in ~/.config/pomocli/config.jsonc you can adjust the time for break, long break and work time as well as the notification messages
 ```bash
 {
   // Pomodoro work duration in minutes
