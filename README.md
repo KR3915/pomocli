@@ -1,11 +1,13 @@
 # Pomocli
 pomocli is simple pomodoro based in terminal with notification feature with simple jsonc config
-
-## Showcase
-
-Insert gif or link to demo
 ### What is pomodoro
 The Pomodoro Technique is a simple way to manage your time. You work for 25 minutes, then take a 5-minute break. After doing that four times, you take a longer break, like 15 to 30 minutes. It helps you stay focused and get things done without burning out.
+## Showcase
+![Demo](assets/demo.gif)
+### notification 
+![notification](assets/notif.png)
+Insert gif or link to demo
+
 ## How to use
 just run the `pomocli` command in your terminal and it will start the timer with the config
 ### Why i made this project
