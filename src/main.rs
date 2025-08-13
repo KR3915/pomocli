@@ -2,6 +2,59 @@ use figlet_rs::FIGfont;
 use std::{thread, time};
 use std::io::{stdout, Write};
 use terminal_size::{Width, Height, terminal_size};
+use serde::Deserialize;
+use std::fs;
+use std::path::PathBuf;
+use json_comments::StripComments;
+
+#[derive(Deserialize)]
+struct Config {
+    work_minutes: u32,
+    break_minutes: u32,
+    long_break_minutes: u32,
+    pomodoros_before_long_break: u32,
+    work_message: String,
+    break_message: String,
+    long_break_message: String,
+}
+
+const DEFAULT_CONFIG: &str = r#"{
+  // Pomodoro work duration in minutes
+  "work_minutes": 25,
+  // Short break duration in minutes
+  "break_minutes": 5,
+  // Long break duration in minutes
+  "long_break_minutes": 15,
+  // Number of pomodoros before a long break
+  "pomodoros_before_long_break": 4,
+  // Messages
+  "work_message": "TIME TO WORK :(",
+  "break_message": "BREAK TIME >.<",
+  "long_break_message": "LONG BREAK >.<!!"
+}
+"#;
+
+fn load_config() -> Config {
+    let mut config_path = dirs::home_dir().unwrap_or(PathBuf::from("/"));
+    config_path.push(".config/pomocli/config.jsonc");
+    let config_str = fs::read_to_string(&config_path)
+        .expect("Failed to read config file");
+    let stripped = StripComments::new(config_str.as_bytes());
+    serde_json::from_reader(stripped)
+        .expect("Failed to parse config file")
+}
+
+fn ensure_config_exists() {
+    let mut config_path = dirs::home_dir().unwrap_or(PathBuf::from("/"));
+    config_path.push(".config/pomocli/config.jsonc");
+    if !config_path.exists() {
+        if let Some(parent) = config_path.parent() {
+            std::fs::create_dir_all(parent).expect("Failed to create config directory");
+        }
+        std::fs::write(&config_path, DEFAULT_CONFIG).expect("Failed to write default config");
+        println!("Created default config at {:?}", config_path);
+    }
+}
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[1;1H");
@@ -52,6 +105,8 @@ fn print_centered_text(text: &str) {
 }
 
 fn main() {
+    ensure_config_exists();
+    let config = load_config();
     let mut is_break: bool = false;
     let mut minutes: i32 = 0;
     let mut seconds: i32 = 0;
@@ -60,9 +115,9 @@ fn main() {
     let standard_font = FIGfont::standard().unwrap();
 
     loop {
-        if count == 4 {
+        if count == config.pomodoros_before_long_break {
             count = 0;
-            minutes = 25;
+            minutes = config.long_break_minutes as i32;
             seconds = 0;
 
             loop {
@@ -84,12 +139,12 @@ fn main() {
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
                     print_centered_figure(figure);
-                    print_centered_text("LONG BREAK >.<!!");
+                    print_centered_text(&config.long_break_message);
                 }
             }
         }
         if is_break {
-            minutes = 5;
+            minutes = config.break_minutes as i32;
             seconds = 0;
         }
         loop {
@@ -111,12 +166,12 @@ fn main() {
             let figure = standard_font.convert(&time);
             if let Some(ref figure) = figure {
                 print_centered_figure(figure);
-                print_centered_text("BREAK TIME >.<");
+                print_centered_text(&config.break_message);
             }
         }
 
         if !is_break {
-            minutes = 20;
+            minutes = config.work_minutes as i32;
             seconds = 0;
 
             loop {
@@ -139,7 +194,7 @@ fn main() {
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
                     print_centered_figure(figure);
-                    print_centered_text("TIME TO WORK :(");
+                    print_centered_text(&config.work_message);
                 }
             }
         };
