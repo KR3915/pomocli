@@ -108,20 +108,24 @@ fn main() {
     ensure_config_exists();
     let config = load_config();
     let mut is_break: bool = false;
-    let mut minutes: i32 = 0;
-    let mut seconds: i32 = 0;
     let mut count = 0;
 
     let standard_font = FIGfont::standard().unwrap();
 
     loop {
+        // Long break
         if count == config.pomodoros_before_long_break {
             count = 0;
-            minutes = config.long_break_minutes as i32;
-            seconds = 0;
-
+            let mut minutes = config.long_break_minutes as i32;
+            let mut seconds = 0;
+            clear_screen();
             loop {
-                clear_screen();
+                let time = format!("{}:{:02}", minutes, seconds);
+                let figure = standard_font.convert(&time);
+                if let Some(ref figure) = figure {
+                    print_centered_figure(figure);
+                    print_centered_text(&config.long_break_message);
+                }
                 thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
@@ -134,49 +138,49 @@ fn main() {
                 } else {
                     seconds -= 1;
                 }
-
+                clear_screen();
+            }
+        }
+        // Break
+        else if is_break {
+            let mut minutes = config.break_minutes as i32;
+            let mut seconds = 0;
+            clear_screen();
+            loop {
                 let time = format!("{}:{:02}", minutes, seconds);
                 let figure = standard_font.convert(&time);
                 if let Some(ref figure) = figure {
                     print_centered_figure(figure);
-                    print_centered_text(&config.long_break_message);
+                    print_centered_text(&config.break_message);
                 }
-            }
-        }
-        if is_break {
-            minutes = config.break_minutes as i32;
-            seconds = 0;
-        }
-        loop {
-            clear_screen();
-            thread::sleep(time::Duration::from_secs(1));
-            if seconds == 0 {
-                if minutes == 0 {
-                    is_break = false;
-                    break;
-                } else {
-                    minutes -= 1;
-                    seconds = 59;
-                }
-            } else {
-                seconds -= 1;
-            }
-
-            let time = format!("{}:{:02}", minutes, seconds);
-            let figure = standard_font.convert(&time);
-            if let Some(ref figure) = figure {
-                print_centered_figure(figure);
-                print_centered_text(&config.break_message);
-            }
-        }
-
-        if !is_break {
-            minutes = config.work_minutes as i32;
-            seconds = 0;
-
-            loop {
                 thread::sleep(time::Duration::from_secs(1));
+                if seconds == 0 {
+                    if minutes == 0 {
+                        is_break = false;
+                        break;
+                    } else {
+                        minutes -= 1;
+                        seconds = 59;
+                    }
+                } else {
+                    seconds -= 1;
+                }
                 clear_screen();
+            }
+        }
+        // Work
+        else {
+            let mut minutes = config.work_minutes as i32;
+            let mut seconds = 0;
+            clear_screen();
+            loop {
+                let time = format!("{}:{:02}", minutes, seconds);
+                let figure = standard_font.convert(&time);
+                if let Some(ref figure) = figure {
+                    print_centered_figure(figure);
+                    print_centered_text(&config.work_message);
+                }
+                thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
                         is_break = true;
@@ -189,15 +193,9 @@ fn main() {
                 } else {
                     seconds -= 1;
                 }
-
-                let time = format!("{}:{:02}", minutes, seconds);
-                let figure = standard_font.convert(&time);
-                if let Some(ref figure) = figure {
-                    print_centered_figure(figure);
-                    print_centered_text(&config.work_message);
-                }
+                clear_screen();
             }
-        };
+        }
     }
 }
 
