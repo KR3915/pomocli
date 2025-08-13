@@ -1,5 +1,5 @@
 # Pomocli
-pomocli is simple pomodoro based in terminal with simple jsonc config
+pomocli is simple pomodoro based in terminal with notification feature with simple jsonc config
 
 ## Showcase
 
@@ -19,6 +19,27 @@ git clone https://github.com/KR3915/pomodoro-cli.git
 cd pomodoro-cli
 cargo build --release
 ./target/release/pomodoro-cli
+```
+## Customization
+in ~/.config/pomocli/config.jsonc you can adjust the time for break, long break and work time as well as the messages
+{
+  // Pomodoro work duration in minutes
+  "work_minutes": 25,
+
+  // Short break duration in minutes
+  "break_minutes": 5,
+
+  // Long break duration in minutes
+  "long_break_minutes": 15,
+
+  // Number of pomodoros before a long break
+  "pomodoros_before_long_break": 4,
+
+  // Messages
+  "work_message": "TIME TO WORK :(",
+  "break_message": "BREAK TIME >.<",
+  "long_break_message": "LONG BREAK >.<!!"
+}
 
 
 
