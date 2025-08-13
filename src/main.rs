@@ -120,6 +120,12 @@ fn main() {
             let mut minutes = config.long_break_minutes as i32;
             let mut seconds = 0;
 
+            // Notify at start of long break
+            let _ = Notification::new()
+                .summary("Pomocli")
+                .body(&config.long_break_message)
+                .show();
+
             loop {
                 clear_screen();
                 let time = format!("{}:{:02}", minutes, seconds);
@@ -131,11 +137,6 @@ fn main() {
                 thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
-                        // Notify
-                        let _ = Notification::new()
-                            .summary("Pomocli")
-                            .body(&config.long_break_message)
-                            .show();
                         is_break = false;
                         break;
                     } else {
@@ -152,6 +153,12 @@ fn main() {
             let mut minutes = config.break_minutes as i32;
             let mut seconds = 0;
 
+            // Notify at start of break
+            let _ = Notification::new()
+                .summary("Pomocli")
+                .body(&config.break_message)
+                .show();
+
             loop {
                 clear_screen();
                 let time = format!("{}:{:02}", minutes, seconds);
@@ -163,11 +170,6 @@ fn main() {
                 thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
-                        // Notify
-                        let _ = Notification::new()
-                            .summary("Pomocli")
-                            .body(&config.break_message)
-                            .show();
                         is_break = false;
                         break;
                     } else {
@@ -184,6 +186,12 @@ fn main() {
             let mut minutes = config.work_minutes as i32;
             let mut seconds = 0;
 
+            // Notify at start of work
+            let _ = Notification::new()
+                .summary("Pomocli")
+                .body(&config.work_message)
+                .show();
+
             loop {
                 clear_screen();
                 let time = format!("{}:{:02}", minutes, seconds);
@@ -195,11 +203,6 @@ fn main() {
                 thread::sleep(time::Duration::from_secs(1));
                 if seconds == 0 {
                     if minutes == 0 {
-                        // Notify
-                        let _ = Notification::new()
-                            .summary("Pomocli")
-                            .body(&config.work_message)
-                            .show();
                         is_break = true;
                         count += 1;
                         break;
