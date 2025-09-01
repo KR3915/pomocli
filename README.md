@@ -6,7 +6,6 @@ The Pomodoro Technique is a simple way to manage your time. You work for 25 minu
 ![Demo](assets/demo.gif)
 ### notification 
 ![notification](assets/notif.png)
-Insert gif or link to demo
 
 ## How to use
 just run the `pomocli` command in your terminal and it will start the timer with the config
