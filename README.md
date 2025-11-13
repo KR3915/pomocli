@@ -63,20 +63,6 @@ This rhythm helps maintain focus, prevent burnout, and improve productivity.
 - Rust toolchain (install from [rustup.rs](https://rustup.rs/))
 - A terminal that supports ANSI colors
 
-### Build from Source
-
-```bash
-# Clone the repository
-git clone https://github.com/KR3915/pomocli.git
-
-# Navigate to the project directory
-cd pomocli
-
-
-# Run the timer
-./pomocli
-```
-
 ### Install Globally (recomended)
 
 ```bash
@@ -88,6 +74,7 @@ pomocli
 ```
 
 ---
+## on windows just run the .exe file
 
 ## Usage
 
